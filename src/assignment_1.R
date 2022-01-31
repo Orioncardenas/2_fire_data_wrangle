@@ -6,6 +6,7 @@ library(lubridate)
 # Now that we have learned how to munge (manipulate) data
 # and plot it, we will work on using these skills in new ways
 
+knitr::opts_knit$set(root.dir="..")
 
 ####-----Reading in Data and Stacking it ----- ####
 #Reading in files
@@ -31,7 +32,8 @@ full_long <- rbind(ndvi,ndmi,ndsi) %>%
   gather(key='site',value='value',-DateTime,-data) %>%
   filter(!is.na(value))
 
-
+View(full_long)
+View(full_wide)
 ##### Question 1 #####
 #1 What is the correlation between NDVI and NDMI? - here I want you to
 #convert the full_long dataset in to a wide dataset using the 
@@ -52,16 +54,22 @@ ggplot(summer_only,aes(x=ndmi,y=ndvi,color=site)) +
   theme(legend.position=c(0.8,0.8))
 
 
-## End Code for Question 1 -----------
-
-
 #### Question 2 ####
 #2) What is the correlation between average NDSI (normalized 
 # snow index) for January - April and average NDVI for June-August?
 #In other words, does the previous year's snow cover influence vegetation
 # growth for the following summer? 
 
+ndsi_long = gather(full_long,)
+ndsi_month <- ndsi_long %>%
+  mutate(year=year(DateTime)) %>%
+  mutate(month=month(DateTime)) %>%
+  group_by(site,month) %>%
+  summarize(mean_NDVI=mean(NDVI))
 
+avg_NDVI_summer_only = 
+
+ggplot(snow_mos, aes())
 ## Your code here
 
 ## End code for question 2 -----------------

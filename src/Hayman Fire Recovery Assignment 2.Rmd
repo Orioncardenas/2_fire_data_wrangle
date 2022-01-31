@@ -57,6 +57,22 @@ function "spread" and then make a plot that shows the correlation s a
 function of if the site was burned or not (x axis should be ndmi)
 You should exclude winter months and focus on summer months
 
+There is a positive correlation. Higher moisture and NDVI in unburned, and lower moisture and NDVI in burned.
+?spread
+```{r}
+full_wide <- spread(data=full_long,key='data',value='value') %>%
+  filter_if(is.numeric,all_vars(!is.na(.))) %>%
+  mutate(month = month(DateTime),
+         year = year(DateTime))
+
+summer_only <- filter(full_wide,month %in% c(6,7,8,9))
+
+ggplot(summer_only,aes(x=ndmi,y=ndvi,color=site)) + 
+  geom_point() + 
+  theme_few() + 
+  scale_color_few() + 
+  theme(legend.position=c(0.8,0.8))
+```
 
 
 ## Question 2 
@@ -65,31 +81,119 @@ You should exclude winter months and focus on summer months
  snow index) for January - April and average NDVI for June-August?
 In other words, does the previous year's snow cover influence vegetation
  growth for the following summer?
+ 
+There does not appear to be any correlation between the previous year's snow cover and the vegetation growth in the following year.
+``` {r}
+avg_ndsi_snow_mos <- full_wide %>%
+  mutate(year=year(DateTime)) %>%
+  mutate(month=month(DateTime)) %>%
+  filter(month %in% c(1,2,3,4)) %>%
+  group_by(site,year) %>%
+  summarize(mean_ndsi=mean(ndsi))
 
+avg_ndvi_summer <- full_wide %>%
+  mutate(year=year(DateTime)) %>%
+  mutate(month=month(DateTime)) %>%
+  filter(month %in% c(6,7,8)) %>%
+  group_by(site,year) %>%
+  summarize(mean_ndvi=mean(ndvi))
+
+q2_ndvi_ndsi <- left_join(avg_ndsi_snow_mos, avg_ndvi_summer)
+
+ggplot(q2_ndvi_ndsi,aes(x=mean_ndsi,y=mean_ndvi,color=site)) + 
+  geom_point() + 
+  theme_few() + 
+  scale_color_few() + 
+  theme(legend.position=c(0.8,0.2))
+```
 
 ## Q3
 
 How is the snow effect from question 2 different between pre- and post-burn
 and burned and unburned? 
 
+Pre burn there is little difference in the NDVI and NDSI values across the
+burned and unburned sites. Post burn there is an obvious difference between the
+sites in which the unburned site has high NDVI and NDSI values and the burned site
+has low NDVI and NDSI.
+
+```{r}
+
+wide_burn_unburned <-spread(data=q2_ndvi_ndsi,key = "site", value = "site")
+
+pre_burn <- q2_ndvi_ndsi %>%
+  filter(year < 2002)
+
+post_burn <- q2_ndvi_ndsi %>%
+  filter(year > 2002)
+
+ggplot(pre_burn,aes(x=mean_ndsi,y=mean_ndvi, color = site)) + 
+  ggtitle("Pre Burn") +
+  xlab("NDSI") +
+  ylab("NDVI") +
+  geom_point() + 
+  theme_few() + 
+  scale_color_few() + 
+  theme(legend.position=c(0.8,0.2))
+
+ggplot(post_burn,aes(x=mean_ndsi,y=mean_ndvi, color = site)) + 
+  ggtitle("Post Burn") +
+  xlab("NDSI") +
+  ylab("NDVI") +
+  geom_point() + 
+  theme_few() + 
+  scale_color_few() + 
+  theme(legend.position=c(0.8,0.2))
+
+```
 
 ## Question 4
 
 What month is the greenest month on average? 
 
+August has the highest NDVI on average
 
+``` {r}
+avg_ndvi_month <- full_wide %>%
+  mutate(year=year(DateTime)) %>%
+  mutate(month=month(DateTime)) %>%
+  group_by(month) %>%
+  summarize(mean_ndvi=mean(ndvi))
 
+ggplot(avg_ndvi_month,aes(x=month,y=mean_ndvi)) + 
+  ggtitle("Average NDVI By Month") +
+  xlab("Month") +
+  ylab("NDVI") +
+  scale_x_continuous(breaks = seq(0, 12, by = 1)) +
+  geom_point() + 
+  theme_few() + 
+  scale_color_few() + 
+  theme(legend.position=c(0.8,0.2))
+```
 
 ## Question 5) 
 
 What month is the snowiest on average?
 
+January is the snowiest on average
+``` {r}
+avg_ndsi_month <- full_wide %>%
+  mutate(year=year(DateTime)) %>%
+  mutate(month=month(DateTime)) %>%
+  group_by(month) %>%
+  summarize(mean_ndsi=mean(ndsi))
 
+ggplot(avg_ndsi_month,aes(x=month,y=mean_ndsi)) + 
+  ggtitle("Average NDSI By Month") +
+  xlab("Month") +
+  ylab("NDSI") +
+  scale_x_continuous(breaks = seq(0, 12, by = 1)) +
+  geom_point() + 
+  theme_few() + 
+  scale_color_few() + 
+  theme(legend.position=c(0.8,0.2))
+```
 ## Bonus Question: Redo all problems with `spread` and `gather` using modern tidyverse syntax. 
 
 
 ## Bonus Question: Use Climage Engine to pull the same data for the assignment, but updated with 2020/2021 data.
-
-
-
-
