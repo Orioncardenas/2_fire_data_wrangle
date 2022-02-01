@@ -187,13 +187,10 @@ ggplot(avg_ndsi_month,aes(x=month,y=mean_ndsi)) +
   ggtitle("Average NDSI By Month") +
   xlab("Month") +
   ylab("NDSI") +
-  scale_x_continuous(breaks = seq(0, 12, by = 1)) +
+  scale_x_continuous(breaks = seq(1, 12, by = 1)) +
   geom_point() + 
   theme_few() + 
   scale_color_few() + 
   theme(legend.position=c(0.8,0.2))
 ```
-## Bonus Question: Redo all problems with `spread` and `gather` using modern tidyverse syntax. 
 
-
-## Bonus Question: Use Climage Engine to pull the same data for the assignment, but updated with 2020/2021 data.
