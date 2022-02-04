@@ -206,7 +206,7 @@ full_long &lt;- rbind(ndvi,ndmi,ndsi) %&gt;%
 <div id="question-1" class="section level2">
 <h2>Question 1)</h2>
 <p>What is the correlation between NDVI and NDMI? - here I want you to convert the full_long dataset in to a wide dataset using the function “spread” and then make a plot that shows the correlation s a function of if the site was burned or not (x axis should be ndmi) You should exclude winter months and focus on summer months</p>
-<p>There is a positive correlation. Higher moisture and NDVI in unburned, and lower moisture and NDVI in burned. ?spread</p>
+<p>There is a positive correlation between NDMI and NDVI. I observe higher moisture and NDVI values in the unburned site, and lower moisture and NDVI values in the burned site. This makes sense provided that adequate moisture is necessary for vegetation growth.</p>
 <pre class="r"><code>full_wide &lt;- spread(data=full_long,key=&#39;data&#39;,value=&#39;value&#39;) %&gt;%
   filter_if(is.numeric,all_vars(!is.na(.))) %&gt;%
   mutate(month = month(DateTime),
@@ -226,7 +226,7 @@ ggplot(summer_only,aes(x=ndmi,y=ndvi,color=site)) +
 <ol start="2" style="list-style-type: decimal">
 <li>What is the correlation between average NDSI (normalized snow index) for January - April and average NDVI for June-August? In other words, does the previous year’s snow cover influence vegetation growth for the following summer?</li>
 </ol>
-<p>There does not appear to be any correlation between the previous year’s snow cover and the vegetation growth in the following year.</p>
+<p>There does not appear to be any correlation between the previous year’s snow cover and the vegetation growth in the following year. The values appear to be uncorrelated although we still observe higher NDVI values in the unburned site as expected.</p>
 <pre class="r"><code>avg_ndsi_snow_mos &lt;- full_wide %&gt;%
   mutate(year=year(DateTime)) %&gt;%
   mutate(month=month(DateTime)) %&gt;%
@@ -284,7 +284,7 @@ ggplot(pre_burn,aes(x=mean_ndsi,y=mean_ndvi, color = site)) +
 <div id="question-4" class="section level2">
 <h2>Question 4</h2>
 <p>What month is the greenest month on average?</p>
-<p>August has the highest NDVI on average</p>
+<p>August has the highest NDVI on average indicating it is the “greenest”.</p>
 <pre class="r"><code>avg_ndvi_month &lt;- full_wide %&gt;%
   mutate(year=year(DateTime)) %&gt;%
   mutate(month=month(DateTime)) %&gt;%
@@ -305,7 +305,7 @@ ggplot(avg_ndvi_month,aes(x=month,y=mean_ndvi)) +
 <div id="question-5" class="section level2">
 <h2>Question 5)</h2>
 <p>What month is the snowiest on average?</p>
-<p>January is the snowiest on average</p>
+<p>January has the highest NDSI on average indicating it is the “snowiest”.</p>
 <pre class="r"><code>avg_ndsi_month &lt;- full_wide %&gt;%
   mutate(year=year(DateTime)) %&gt;%
   mutate(month=month(DateTime)) %&gt;%

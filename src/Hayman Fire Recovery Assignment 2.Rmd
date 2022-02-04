@@ -57,8 +57,8 @@ function "spread" and then make a plot that shows the correlation s a
 function of if the site was burned or not (x axis should be ndmi)
 You should exclude winter months and focus on summer months
 
-There is a positive correlation. Higher moisture and NDVI in unburned, and lower moisture and NDVI in burned.
-?spread
+There is a positive correlation between NDMI and NDVI. I observe higher moisture and NDVI values in the unburned site, and lower moisture and NDVI values in the burned site. This makes sense provided that adequate moisture is necessary for vegetation growth.
+
 ```{r}
 full_wide <- spread(data=full_long,key='data',value='value') %>%
   filter_if(is.numeric,all_vars(!is.na(.))) %>%
@@ -82,7 +82,7 @@ ggplot(summer_only,aes(x=ndmi,y=ndvi,color=site)) +
 In other words, does the previous year's snow cover influence vegetation
  growth for the following summer?
  
-There does not appear to be any correlation between the previous year's snow cover and the vegetation growth in the following year.
+There does not appear to be any correlation between the previous year's snow cover and the vegetation growth in the following year. The values appear to be uncorrelated although we still observe higher NDVI values in the unburned site as expected.
 ``` {r}
 avg_ndsi_snow_mos <- full_wide %>%
   mutate(year=year(DateTime)) %>%
@@ -115,7 +115,7 @@ and burned and unburned?
 Pre burn there is little difference in the NDVI and NDSI values across the
 burned and unburned sites. Post burn there is an obvious difference between the
 sites in which the unburned site has high NDVI and NDSI values and the burned site
-has low NDVI and NDSI.
+has low NDVI and NDSI. 
 
 ```{r}
 
@@ -151,7 +151,7 @@ ggplot(post_burn,aes(x=mean_ndsi,y=mean_ndvi, color = site)) +
 
 What month is the greenest month on average? 
 
-August has the highest NDVI on average
+August has the highest NDVI on average indicating it is the "greenest".
 
 ``` {r}
 avg_ndvi_month <- full_wide %>%
@@ -175,7 +175,7 @@ ggplot(avg_ndvi_month,aes(x=month,y=mean_ndvi)) +
 
 What month is the snowiest on average?
 
-January is the snowiest on average
+January has the highest NDSI on average indicating it is the "snowiest".
 ``` {r}
 avg_ndsi_month <- full_wide %>%
   mutate(year=year(DateTime)) %>%
